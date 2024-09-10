@@ -1,111 +1,22 @@
-# Spring-Thymeleaf-CHEAT-SHEAT
-cheat sheet for Spring Thymeleaf with practical examples, organized in a table format
 
-<table>
-  <thead>
-    <tr>
-      <th>Example</th>
-      <th>Thymeleaf Code</th>
-      <th>Spring Code</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>1. Basic Button to Trigger API</td>
-      <td>
-        <pre><code>
-<form th:action="@{/api/someEndpoint}" method="post">
-  <button type="submit">Trigger API</button>
-</form>
-        </code></pre>
-      </td>
-      <td>
-        <pre><code>
-@PostMapping("/api/someEndpoint")
-public String handlePost() {
-    // Handle action
-    return "redirect:/";
-}
-        </code></pre>
-      </td>
-    </tr>
-    <tr>
-      <td>2. Passing Data to API (GET Request)</td>
-      <td>
-        <pre><code>
-<form th:action="@{/api/someEndpoint(id=${someId})}" method="get">
-  <button type="submit">Get Data</button>
-</form>
-        </code></pre>
-      </td>
-      <td>
-        <pre><code>
-@GetMapping("/api/someEndpoint")
-public String getData(@RequestParam("id") String id) {
-    // Process data
-    return "someView";
-}
-        </code></pre>
-      </td>
-    </tr>
-    <tr>
-      <td>3. Passing Data to API (POST Request)</td>
-      <td>
-        <pre><code>
-<form th:action="@{/api/someEndpoint}" method="post">
-  <input type="text" name="inputValue"/>
-  <button type="submit">Submit</button>
-</form>
-        </code></pre>
-      </td>
-      <td>
-        <pre><code>
-@PostMapping("/api/someEndpoint")
-public String handlePost(@RequestParam("inputValue") String inputValue) {
-    // Process input
-    return "someView";
-}
-        </code></pre>
-      </td>
-    </tr>
-    <tr>
-      <td>4. Loading List of Items from API</td>
-      <td>
-        <pre><code>
-<ul>
-  <li th:each="item : ${itemsList}" th:text="${item.name}"></li>
-</ul>
-        </code></pre>
-      </td>
-      <td>
-        <pre><code>
-@GetMapping("/items")
-public String getItems(Model model) {
-    List&lt;Item&gt; itemsList = itemService.getAllItems();
-    model.addAttribute("itemsList", itemsList);
-    return "itemsView";
-}
-        </code></pre>
-      </td>
-    </tr>
-    <tr>
-      <td>5. Conditionals (If-Else)</td>
-      <td>
-        <pre><code>
-<div th:if="${isLoggedIn}">Welcome, User!</div>
-<div th:unless="${isLoggedIn}">Please log in.</div>
-        </code></pre>
-      </td>
-      <td>
-        <pre><code>
-@GetMapping("/dashboard")
-public String showDashboard(Model model) {
-    model.addAttribute("isLoggedIn", authService.isLoggedIn());
-    return "dashboardView";
-}
-        </code></pre>
-      </td>
-    </tr>
-    <!-- Add more rows as needed -->
-  </tbody>
-</table>
+# Spring Thymeleaf Cheat Sheet
+
+This cheat sheet provides examples of using Thymeleaf with Spring, including common use cases like handling forms, rendering lists, and interacting with APIs.
+
+| **Example**                               | **Thymeleaf Code**                                                                                                                                                            | **Spring Code**                                                                                                                                                                                   |
+|--------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **1. Basic Button to Trigger API**         | ```html<br><form th:action="@{/api/someEndpoint}" method="post"><br>  <button type="submit">Trigger API</button><br></form>```                                                 | ```java<br>@PostMapping("/api/someEndpoint")<br>public String handlePost() {<br>    // Handle action<br>    return "redirect:/";<br>}```                                                          |
+| **2. Passing Data to API (GET Request)**   | ```html<br><form th:action="@{/api/someEndpoint(id=${someId})}" method="get"><br>  <button type="submit">Get Data</button><br></form>```                                       | ```java<br>@GetMapping("/api/someEndpoint")<br>public String getData(@RequestParam("id") String id) {<br>    // Process data<br>    return "someView";<br>}```                                    |
+| **3. Passing Data to API (POST Request)**  | ```html<br><form th:action="@{/api/someEndpoint}" method="post"><br>  <input type="text" name="inputValue"/><br>  <button type="submit">Submit</button><br></form>```           | ```java<br>@PostMapping("/api/someEndpoint")<br>public String handlePost(@RequestParam("inputValue") String inputValue) {<br>    // Process input<br>    return "someView";<br>}```                |
+| **4. Loading List of Items from API**      | ```html<br><ul><br>  <li th:each="item : ${itemsList}" th:text="${item.name}"></li><br></ul>```                                                                               | ```java<br>@GetMapping("/items")<br>public String getItems(Model model) {<br>    List<Item> itemsList = itemService.getAllItems();<br>    model.addAttribute("itemsList", itemsList);<br>    return "itemsView";<br>}```|
+| **5. Conditionals (If-Else)**              | ```html<br><div th:if="${isLoggedIn}">Welcome, User!</div><br><div th:unless="${isLoggedIn}">Please log in.</div>```                                                           | ```java<br>@GetMapping("/dashboard")<br>public String showDashboard(Model model) {<br>    model.addAttribute("isLoggedIn", authService.isLoggedIn());<br>    return "dashboardView";<br>}```      |
+| **6. Loop through List of Objects**        | ```html<br><table><br>  <tr th:each="item : ${itemsList}"><br>    <td th:text="${item.id}"></td><br>    <td th:text="${item.name}"></td><br>  </tr><br></table>```             | ```java<br>@GetMapping("/items")<br>public String listItems(Model model) {<br>    List<Item> itemsList = itemService.getAllItems();<br>    model.addAttribute("itemsList", itemsList);<br>    return "itemsView";<br>}```|
+| **7. Setting Attribute Dynamically**       | ```html<br><a th:href="@{/details/{id}(id=${item.id})}">Details</a>```                                                                                                        | ```java<br>@GetMapping("/details/{id}")<br>public String showDetails(@PathVariable Long id, Model model) {<br>    Item item = itemService.getItemById(id);<br>    model.addAttribute("item", item);<br>    return "detailsView";<br>}```|
+| **8. Fragment Inclusion**                  | ```html<br><div th:replace="fragments/header :: header"></div>```                                                                                                             | ```java<br>@Controller<br>public class FragmentController {<br>    @GetMapping("/somePage")<br>    public String showPage() {<br>        return "somePageView";<br>    }<br>}```                   |
+| **9. Loop with Index**                     | ```html<br><ul><br>  <li th:each="item, iter : ${itemsList}" th:text="${iter.count} + '. ' + ${item.name}"></li><br></ul>```                                                   | ```java<br>@GetMapping("/itemsWithIndex")<br>public String listItemsWithIndex(Model model) {<br>    List<Item> itemsList = itemService.getAllItems();<br>    model.addAttribute("itemsList", itemsList);<br>    return "itemsWithIndexView";<br>}```|
+| **10. Inline JavaScript with Thymeleaf**   | ```html<br><script th:inline="javascript"><br>  var someVar = [[${someValue}]];<br></script>```                                                                               | ```java<br>@GetMapping("/somePage")<br>public String showPage(Model model) {<br>    model.addAttribute("someValue", 42);<br>    return "somePageView";<br>}```                                    |
+| **11. Displaying a Message or Variable**   | ```html<br><p th:text="${message}"></p>```                                                                                                                                    | ```java<br>@GetMapping("/message")<br>public String showMessage(Model model) {<br>    model.addAttribute("message", "Hello, Thymeleaf!");<br>    return "messageView";<br>}```                    |
+| **12. Text Input Bound to Object**         | ```html<br><input type="text" th:field="*{itemName}" />```                                                                                                                    | ```java<br>@GetMapping("/editItem")<br>public String editItem(Model model) {<br>    model.addAttribute("item", new Item());<br>    return "editItemView";<br>}```                                |
+| **13. Select Dropdown with Options**       | ```html<br><select th:field="*{selectedItem}"><br>  <option th:each="item : ${itemsList}" th:value="${item.id}" th:text="${item.name}"></option><br></select>```              | ```java<br>@GetMapping("/dropdown")<br>public String showDropdown(Model model) {<br>    List<Item> itemsList = itemService.getAllItems();<br>    model.addAttribute("itemsList", itemsList);<br>    return "dropdownView";<br>}```|
+| **14. Sending CSRF Token with Form**       | ```html<br><form th:action="@{/api/submit}" method="post"><br>  <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" /><br>  ...<br></form>```     | ```java<br>@PostMapping("/api/submit")<br>public String handleSubmit() {<br>    // Handle form submission<br>    return "redirect:/success";<br>}```                                               |
+| **15. File Upload Form**                   | ```html<br><form th:action="@{/api/upload}" method="post" enctype="multipart/form-data"><br>  <input type="file" name="file" /><br>  <button type="submit">Upload</button><br></form>``` | ```java<br>@PostMapping("/api/upload")<br>public String handleFileUpload(@RequestParam("file") MultipartFile file) {<br>    // Process file<br>    return "redirect:/success";<br>}```             |
